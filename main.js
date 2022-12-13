@@ -13,10 +13,8 @@ document.addEventListener("keyup", keyupListener);
 class space {
   constructor(coords) {
     this.coords = coords;
-    this.connected = false;
   }
   split() {
-    console.log("SPLIT");
     const direction = randomInt(0, 2);
     const randomDivide = randomInt(
       this.coords[direction] + 500,
@@ -29,13 +27,13 @@ class space {
             this.coords[0],
             this.coords[1],
             randomDivide - this.coords[0],
-            this.coords[3],
+            this.coords[3], 
           ]),
           new space([
             randomDivide,
             this.coords[1],
             this.coords[2] - (randomDivide - this.coords[0]),
-            this.coords[3],
+            this.coords[3], 
           ])
         );
       } else {
@@ -44,7 +42,7 @@ class space {
             this.coords[0],
             this.coords[1],
             this.coords[2],
-            randomDivide - this.coords[1],
+            randomDivide - this.coords[1], 
           ]),
           new space([
             this.coords[0],
@@ -61,7 +59,6 @@ class space {
 }
 
 let spaces = [new space([-3000, -3000, cnv.width + 3000, cnv.height + 3000])];
-console.log(`length = ${spaces.length}`);
 
 let input = {};
 function keydownListener(event) {
@@ -75,15 +72,15 @@ function keyupListener(event) {
 let displacement = [0, 0];
 
 class dungeon {
-  constructor(x, y, w, h) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
+  constructor(segments) {
+    this.segments = segments
+    this.connected = false;
   }
   draw() {
     ctx.fillStyle = "red";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
+    for(let i = 0; i < this.segments.length; i++) {
+      ctx.fillRect(this.segments[i][0] + displacement[0], this.segments[i][1] + displacement[1], this.segments[i][2], this.segments[i][3])
+    }
   }
 }
 
@@ -96,31 +93,33 @@ function divide() {
     }
     spaces = newSpaces;
   }
-  console.log(spaces);
+  createDungeons()
+}
+
+let dungeons = [];
+function createDungeons() {
+  for(let i = 0; i < spaces.length; i++) {
+    const centreX = spaces[i].coords[0] + (spaces[i].coords[2] / 2);
+    const centreY = spaces[i].coords[1] + (spaces[i].coords[3] / 2);
+    let randHeights = []
+    let randWidths = []
+    for(let i = 0; i < 4; i++) {
+      randHeights.push(randomInt(50, 100))
+      randWidths.push(randomInt(50, 100))
+    }
+    const tl = [centreX - randWidths[0], centreY - randHeights[0], randWidths[0], randHeights[0]]
+    const tr = [centreX, centreY - randHeights[1], randWidths[1], randHeights[1]]
+    const bl = [centreX - randWidths[2], centreY, randWidths[2], randHeights[2]]
+    const br = [centreX, centreY, randWidths[3], randHeights[3]]
+
+    dungeons.push(new dungeon([tl, tr, bl, br]))
+  }
   requestAnimationFrame(loop);
 }
 
-// let dungeons = [];
-// function createDungeons() {
-//   for (let i = 0; i < spaces.length; i++) {
-//     let randX = randomInt(spaces[i].coords[0] + 50, spaces[i].coords[0] + spaces[i].coords[2] - 50);
-//     let randY = randomInt(spaces[i].coords[1] + 10, spaces[i].coords[1] + spaces[i].coords[3] - 50);
-
-//     if (randX % 2 !== 0) {
-//       randX++;
-//     }
-//     if (randY % 2 !== 0) {
-//       randY++;
-//     }
-
-//     dungeons.push(new dungeon(randX, randY, 10, 10));
-//   }
-//   requestAnimationFrame(loop);
-// }
-
-// // const divideInterval = setInterval(function() {divide() }, 1000)
-// divide();
-// createDungeons();
+function createPaths() {
+  let isolatedDungeons = dungeons
+}
 
 function loop() {
   if (input["a"]) {
@@ -145,6 +144,9 @@ function loop() {
       spaces[i].coords[2],
       spaces[i].coords[3]
     );
+  }
+  for(let j = 0; j < dungeons.length; j++) {
+    dungeons[j].draw()
   }
   requestAnimationFrame(loop);
 }
