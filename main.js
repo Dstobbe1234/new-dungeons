@@ -11,8 +11,9 @@ document.addEventListener("keydown", keydownListener);
 document.addEventListener("keyup", keyupListener);
 
 class space {
-  constructor(coords) {
+  constructor(coords, children) {
     this.coords = coords;
+    this.parent = parent;
   }
   split() {
     const direction = randomInt(0, 2);
@@ -94,6 +95,7 @@ function divide() {
     spaces = newSpaces;
   }
   createDungeons()
+  console.log(spaces)
 }
 
 let dungeons = [];
@@ -118,7 +120,6 @@ function createDungeons() {
 }
 
 function createPaths() {
-  let isolatedDungeons = dungeons
 }
 
 function loop() {
@@ -152,3 +153,20 @@ function loop() {
 }
 
 divide();
+
+// let test = [{self:0, child:[],}]
+// for(let i = 0; i < 5; i++) {
+//   for(let j = 0; j < test.length; j++) {
+//     let space = test[j]
+//     let index = [0, 0, 0, 0, 0]
+//     for(let k = 0; k < index.length; k++) {
+//       space = test.child[index[k]]
+//     }
+//     for(let k = 1; k < index.length; k++) {
+//       if(index[k] < 1) {
+//         index[k] ++
+//         break
+//       }
+//     }
+//   }
+// }
